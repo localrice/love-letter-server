@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Send to ESP</title>
+</head>
+<body>
+  <h2>Send Message to ESP8266</h2>
+  {% if sent %}
+    <p style="color:green;">Sent: "{{ msg }}"</p>
+  {% endif %}
+  <form method="POST">
+  Message: <input type="text" name="message" value="{{ msg }}" required><br><br>
+  Size (1–4): <input type="number" name="size" value="{{ size }}" min="1" max="4"><br><br>
+  X: <input type="number" name="x" value="{{ x }}"> 
+  Y: <input type="number" name="y" value="{{ y }}"><br><br>
+  <button type="submit">Send</button>
+</form>
+
+</body>
+</html>
