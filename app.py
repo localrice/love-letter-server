@@ -3,10 +3,25 @@ from websocket_server import WebsocketServer
 import threading
 import json
 import os
+import requests
 
 app = Flask(__name__)
 clients = []
 MESSAGE_FILE = "last_message.json"
+DISCORD_WEBHOOK_URL = ""
+
+def send_discord_notification(message):
+    data={
+        "content": message
+    }
+    try:
+        response = requests.post(DISCORD_WEBHOOK_URL, json=data)
+        if response.status_code == 204:
+            print("Discord notification sent successfully.")
+        else:
+            print(f"Failed to send Discord message: {response.status_code} - {response.text}")
+    except Exception as e:
+        print(f"Error sending Discord notification: {e}")
 
 # WebSocket send function
 def send_to_all(msg_obj):
@@ -48,6 +63,12 @@ def client_left(client, server):
 
 def message_received(client, server, message):
     print(f"[WS] Received from client: {message}")
+    try:
+        msg_obj = json.loads(message)
+        if msg_obj.get("type") == "miss_you_button":
+            send_discord_notification("Missing you!!!!")
+    except json.JSONDecodeError:
+        print("Failed to decode JSON message.")
 
 # Start WebSocket server in background thread
 def start_websocket():
